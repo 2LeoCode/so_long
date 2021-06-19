@@ -1,0 +1,3 @@
+[submodule "lib/libft_ultimate"]
+	path = lib/libft_ultimate
+	url = https://github.com/2LeoCode/libft_ultimate.git
