@@ -1,13 +1,21 @@
+OS =		$(shell uname)
 SHELL =		/bin/sh
 NAME =		so_long
 
-.SUFFIXES =	.c .o .h .dylib
+.SUFFIXES =	.c .o .h .a .dylib
 
 SRCDIR =	src
 INCDIR =	inc
-LIBDIR =	lib\
-			.
+LIBDIR =	lib
+
 OBJDIR =	.obj
+OBJFOLD =	$(addprefix $(OBJDIR)/,\
+				exception\
+				parsing\
+				rendering\
+				utils\
+				cleaning\
+				get_next_line)
 
 SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
 			$(addprefix exception/,\
@@ -30,38 +38,70 @@ SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
 				get_next_line_utils)\
 			main)
 INC =		$(addsuffix $(word 3, $(.SUFFIXES)),\
-			get_next_line\
-			mlx\
-			exception\
-			so_long)
-LIB =		mlx\
-			ft
-OBJ =		$(SRC:$(word 1, $(.SUFFIXES))=$(word 2, $(.SUFFIXES)))
+				get_next_line\
+				mlx\
+				exception\
+				so_long)
+LIB =		libft
+DLIB =		libmlx
+LIBNAME =	$(foreach lib, $(LIB),\
+				$(lib)$(word 4, $(.SUFFIXES)))\
+			$(foreach lib, $(DLIB),\
+				$(lib)$(word 5, $(.SUFFIXES)))
+LIBMAKE =	$(addprefix $(LIBDIR)/, $(LIB))
+DLIBMAKE =	$(addprefix $(LIBDIR)/, $(DLIB))
+
+
+OBJ =		$(addprefix $(OBJDIR)/,\
+				$(SRC:$(word 1, $(.SUFFIXES))=$(word 2, $(.SUFFIXES))))
 
 CC =		gcc
 CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) -fsanitize=address -g3
-LCFLAGS =	$(addprefix -L, $(LIBDIR)) $(addprefix -l, $(LIB))
+LCFLAGS =	-L . $(addprefix -l, $(LIB:lib%=%) $(DLIB:lib%=%))
 
-####    COLORS    ####
-KNRM =		\x1B[0m
-KRED =		\x1B[31m
-KGRN =		\x1B[32m
-KYEL =		\x1B[33m
-KBLU =		\x1B[34m
-KMAG =		\x1B[35m
-KCYN =		\x1B[36m
-KWHT =		\x1B[37m
-######################
+ifeq ($(OS), Darwin)
+	KNRM =		\x1B[0m
+	KRED =		\x1B[31m
+	KGRN =		\x1B[32m
+	KYEL =		\x1B[33m
+	KBLU =		\x1B[34m
+	KMAG =		\x1B[35m
+	KCYN =		\x1B[36m
+	KWHT =		\x1B[37m
+else
+	KNRM =		\e[39mk/
+	KRED =		\e[31m
+	KGRN =		\e[32m
+	KYEL =		\e[33m
+	KBLU =		\e[34m
+	KMAG =		\e[35m
+	KCYN =		\e[36m
+	KWHT =		\e[37m
+endif
 
-all: $(OBJDIR) $(NAME)
+all: $(OBJFOLD) $(LIBNAME) $(NAME)
 	@printf "$(KGRN)\`$(NAME)\` is up to date.\n$(KNRM)"
 
-$(OBJDIR):
+$(OBJFOLD):
 	@printf "$(KYEL)➤ "
-	mkdir -p $@/exception $@/parsing $@/rendering $@/utils $@/cleaning $@/get_next_line
+	mkdir -p $(OBJFOLD)
 	@printf "$(KNRM)"
 
-$(NAME): $(addprefix $(OBJDIR)/, $(OBJ))
+%$(word 4, $(.SUFFIXES)): $(LIBDIR)/%
+	@echo "$(KCYN)➤ make -C $^$(KNRM)"
+	@make -C $^
+	@printf "$(KYEL)➤ "
+	cp $^/$@ .
+	@printf "$(KNRM)"
+
+%$(word 5, $(.SUFFIXES)): $(LIBDIR)/%
+	@echo "$(KCYN)➤ make -C $^$(KNRM)"
+	@make -C $^
+	@printf "$(KYEL)➤ "
+	cp $^/$@ .
+	@printf "$(KNRM)"
+
+$(NAME): $(OBJ)
 	@printf "$(KCYN)[  Linking  ]\n➤ "
 	$(CC) $(CFLAGS) $^ -o $@ $(LCFLAGS)
 	@printf "$(KNRM)"
@@ -75,10 +115,15 @@ clean:
 	@printf "$(KRED)➤ "
 	rm -rf $(OBJDIR)
 	@printf "$(KNRM)"
+	$(foreach lib, $(LIBMAKE) $(DLIBMAKE),\
+		$(MAKE) fclean -C $(lib);)
+	@printf "$(KNRM)"
 
 fclean: clean
 	@printf "$(KRED)➤ "
 	rm -f $(NAME)
+	@printf "$(KRED)➤ "
+	rm -rf $(LIBNAME)
 	@printf "$(KNRM)"
 
 re: fclean all
