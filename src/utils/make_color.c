@@ -17,6 +17,6 @@ int	make_color(int r, int g, int b)
 	if (endian == -1)
 		endian = get_endian();
 	if (endian == ENDIAN_LITTLE)
-		return ((r << 16) + (g << 8) + b);
-	return ((r >> 16) + (g >> 8) + b);
+		return (((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff));
+	return (((r & 0xff) >> 16) + ((g & 0xff) >> 8) + (b & 0xff));
 }
