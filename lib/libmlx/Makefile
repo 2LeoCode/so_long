@@ -32,5 +32,5 @@ $(NAME): $(MODULE_OBJ) $(OBJ) $(C_OBJ)
 clean:
 	rm -f $(OBJ) $(MODULE_OBJ) $(C_OBJ) *.swiftdoc *~
 
-fclean:
+fclean: clean
 	rm -f $(NAME)
