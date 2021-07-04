@@ -34,7 +34,8 @@ SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
 				init_image\
 				make_color\
 				wrapper_init\
-				wrappers)\
+				wrappers\
+				vec2)\
 			$(addprefix cleaning/,\
 				mlx_clear)\
 			$(addprefix get_next_line/,\

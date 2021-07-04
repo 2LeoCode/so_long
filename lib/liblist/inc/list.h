@@ -7,7 +7,7 @@
 # include <stddef.h>
 # include <stdio.h>
 
-typedef int		(*t_cmpf)(void *, void *);
+typedef int		(*t_cmpf)(const void *, const void *);
 typedef void	(*t_destructor)(void *);
 
 typedef struct s_list

@@ -116,4 +116,6 @@ void	mlx_destroy_image_wrapper(void *data);
 void	exit_wrapper(int ret);
 
 void	init_wrappers(void *key);
+int		vec2_cmp(const void *a, const void *b);
+t_vec2	*make_vec2(int x, int y);
 #endif

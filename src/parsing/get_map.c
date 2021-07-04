@@ -57,9 +57,10 @@ t_list	*get_file_content(const char *path)
 
 int		get_map_infos(t_map *map)
 {
-	int	i;
-	int	i2;
-	int	j;
+	int		i;
+	int		i2;
+	int		j;
+	t_vec2	*vec_ptr;
 
 	map->player_pos = (t_vec2){-1, -1};
 	map->exit_pos = (t_vec2){-1, -1};
@@ -85,10 +86,12 @@ int		get_map_infos(t_map *map)
 					return (-1);
 				map->exit_pos = (t_vec2){j, i};
 			}
-			else if (map->data[i2 + j] == 'C'
-					&& lst_push_back(map->collect_pos,
-						(void *)(t_vec2[]){{j, i}}, NULL))
-				return (-1);
+			else if (map->data[i2 + j] == 'C')
+			{
+				vec_ptr = make_vec2(j, i);
+				if (!vec_ptr || lst_push_back(map->collect_pos, vec_ptr, free))
+					return (-1);
+			}
 		}
 	}
 	return (0);
