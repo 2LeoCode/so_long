@@ -1,6 +1,6 @@
 OS =		$(shell uname)
 SHELL =		/bin/sh
-NAME =		so_long
+NAME =		liblist.a
 
 .SUFFIXES =	.c .o .h .a .dylib
 
@@ -10,48 +10,21 @@ LIBDIR =	lib
 
 OBJDIR =	.obj
 OBJFOLD =	$(addprefix $(OBJDIR)/,\
-				exception\
-				parsing\
-				rendering\
-				utils\
-				cleaning\
-				get_next_line\
-				key_hook)
+			)
 
 SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
-			$(addprefix exception/,\
-				exception\
-				bad_alloc\
-				invalid_arguments\
-				invalid_map\
-				runtime_error)\
-			$(addprefix parsing/,\
-				get_map)\
-			$(addprefix rendering/,\
-				render_map\
-				img_loader)\
-			$(addprefix utils/,\
-				init_image\
-				make_color\
-				wrapper_init\
-				wrappers)\
-			$(addprefix cleaning/,\
-				mlx_clear)\
-			$(addprefix get_next_line/,\
-				get_next_line\
-				get_next_line_utils)\
-			$(addprefix key_hook/,\
-				key_hook)\
-			main)
+			clear\
+			destroy\
+			error\
+			find\
+			init\
+			new\
+			pop\
+			push)
 INC =		$(addsuffix $(word 3, $(.SUFFIXES)),\
-				get_next_line\
-				mlx\
-				exception\
-				so_long)
-LIB =		libft\
-			liblist\
-			libgb
-DLIB =		libmlx
+			list)
+LIB =		
+DLIB =		
 LIBNAME =	$(foreach lib, $(LIB),\
 				$(lib)$(word 4, $(.SUFFIXES)))\
 			$(foreach lib, $(DLIB),\
@@ -64,7 +37,7 @@ OBJ =		$(addprefix $(OBJDIR)/,\
 				$(SRC:$(word 1, $(.SUFFIXES))=$(word 2, $(.SUFFIXES))))
 
 CC =		gcc
-CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) -fsanitize=address -g3
+CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) #-fsanitize=address -g3
 LCFLAGS =	-L . $(addprefix -l, $(LIB:lib%=%) $(DLIB:lib%=%))
 
 ifeq ($(OS), Darwin)
@@ -87,12 +60,17 @@ else
 	KWHT =		\e[37m
 endif
 
-all: $(OBJFOLD) $(LIBNAME) $(NAME)
+all: $(OBJDIR) $(LIBNAME) $(NAME)
 	@printf "$(KGRN)\`$(NAME)\` is up to date.\n$(KNRM)"
+
+$(OBJDIR):
+	@printf "$(KYEL)➤ "
+	mkdir $@
+	@printf "$(KNRM)"
 
 $(OBJFOLD):
 	@printf "$(KYEL)➤ "
-	mkdir -p $(OBJFOLD)
+	mkdir -p $@
 	@printf "$(KNRM)"
 
 %$(word 4, $(.SUFFIXES)): $(LIBDIR)/%
@@ -111,12 +89,14 @@ $(OBJFOLD):
 
 $(NAME): $(OBJ)
 	@printf "$(KCYN)[  Linking  ]\n➤ "
-	$(CC) $(CFLAGS) $^ -o $@ $(LCFLAGS)
+	ranlib $@
 	@printf "$(KNRM)"
 
 $(OBJDIR)/%$(word 2, $(.SUFFIXES)): $(SRCDIR)/%$(word 1, $(.SUFFIXES)) $(addprefix $(INCDIR)/, $(INC))
 	@printf "$(KMAG)[  Compiling  ]\n➤ "
 	$(CC) $(CFLAGS) -c $< -o $@
+	@printf "➤ "
+	ar rc $(NAME) $@
 	@printf "$(KNRM)"
 
 clean:
