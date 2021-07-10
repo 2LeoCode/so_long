@@ -11,10 +11,14 @@
 # include <errno.h>
 # include <stdio.h>
 # include <fcntl.h>
+# include <X11/X.h>
 
 # define ENDIAN_LITTLE 0
 # define ENDIAN_BIG 1
 # define TILE_SIZE 32
+# define TEXTURE_CNT 5
+# define WALL_DIR_CNT 16
+# define PLAYER_DIR_CNT 4
 
 # define _KEY_LEFT 123
 # define _KEY_RIGHT 124
@@ -27,6 +31,43 @@
 # define _KEY_ESC 53
 
 void	kek(void);
+
+enum e_texture
+{
+	character,
+	end_level,
+	gem,
+	wall,
+	water
+};
+
+typedef enum e_player_direction
+{
+	top,
+	bot,
+	right,
+	left
+}	t_direction;
+
+typedef enum e_wall_direction
+{
+	none,
+	north,
+	east,
+	south,
+	west,
+	east_south,
+	north_east,
+	south_west,
+	north_west,
+	north_south,
+	east_west,
+	north_east_west,
+	north_east_south,
+	east_south_west,
+	north_south_west,
+	all
+}	t_walldir;
 
 typedef struct s_vec2
 {
@@ -52,14 +93,24 @@ typedef struct s_mlx
 	t_img	*main_img;
 }	t_mlx;
 
+typedef struct s_wall
+{
+	int			x;
+	int			y;
+	t_walldir	orientation;
+}	t_wall;
+
 typedef struct s_map
 {
-	t_vec2	size;
-	t_vec2	player_pos;
-	t_vec2	exit_pos;
-	t_list	*collect_pos;
-	int		total_size;
-	char	data[];
+	t_vec2		size;
+	t_vec2		player_pos;
+	t_vec2		exit_pos;
+	t_list		*collect_pos;
+	t_list		*walls;
+	t_direction	player_direction;
+	t_img		*tileset[TEXTURE_CNT];
+	int			total_size;
+	char		data[];
 }	t_map;
 
 /*
@@ -71,6 +122,13 @@ typedef struct s_window_wrapper
 	t_vec2	size;
 	char	*title;
 }	t_winwrap;
+
+typedef struct s_xpm_wrapper
+{
+	char	*filename;
+	int		*w_ptr;
+	int		*h_ptr;
+}	t_xpmwrap;
 
 /*
 **	parsing
@@ -87,6 +145,7 @@ void	render_map(t_map *map);
 **	utils
 */
 void	*init_image(void *data);
+void	*init_image_from_xpm(void *param);
 int		make_color(int r, int g, int b);
 
 /*
@@ -100,7 +159,7 @@ void	clear_mlx(t_mlx *mlx);
 int		key_hook(int keycode, void *param);
 
 /*
-**	image loader
+**	image loading
 */
 void	load_main_img_to_window(void *key, void *win, t_img *main_img);
 void	put_main_img_to_window(void);
@@ -111,6 +170,7 @@ void	put_main_img_to_window(void);
 
 void	*mlx_new_window_wrapper(void *data);
 void	*mlx_new_image_wrapper(void *data);
+void	*mlx_xpm_file_to_image_wrapper(void *data);
 void	mlx_destroy_window_wrapper(void *data);
 void	mlx_destroy_image_wrapper(void *data);
 void	exit_wrapper(int ret);
@@ -118,4 +178,7 @@ void	exit_wrapper(int ret);
 void	init_wrappers(void *key);
 int		vec2_cmp(const void *a, const void *b);
 t_vec2	*make_vec2(int x, int y);
+int		load_textures(t_map *map);
+t_wall	*make_wall(int x, int y, t_walldir orientation);
+
 #endif

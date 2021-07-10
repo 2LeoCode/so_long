@@ -16,9 +16,12 @@ OBJFOLD =	$(addprefix $(OBJDIR)/,\
 				utils\
 				cleaning\
 				get_next_line\
-				key_hook)
+				key_hook\
+				loading)
 
 SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
+			$(addprefix loading/,\
+				load_textures)\
 			$(addprefix exception/,\
 				exception\
 				bad_alloc\
@@ -35,7 +38,9 @@ SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
 				make_color\
 				wrapper_init\
 				wrappers\
-				vec2)\
+				wrappers_2\
+				vec2\
+				wall)\
 			$(addprefix cleaning/,\
 				mlx_clear)\
 			$(addprefix get_next_line/,\

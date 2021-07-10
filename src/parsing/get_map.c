@@ -57,39 +57,108 @@ t_list	*get_file_content(const char *path)
 
 int		get_map_infos(t_map *map)
 {
-	int		i;
-	int		i2;
-	int		j;
-	t_vec2	*vec_ptr;
+	int			i;
+	int			offset;
+	int			prev_offset;
+	int			next_offset;
+	int			j;
+	t_wall		*wall_ptr;
+	t_vec2		*vec_ptr;
+	t_walldir	wall_direction;
 
 	map->player_pos = (t_vec2){-1, -1};
+	map->player_direction = top;
 	map->exit_pos = (t_vec2){-1, -1};
-	if (lst_init(&map->collect_pos))
+	if (lst_init(&map->collect_pos) || lst_init(&map->walls))
+	{
+		lst_destroy(map->collect_pos);
 		return (-1);
+	}
 	gb_push(map->collect_pos, lst_destroy);
+	gb_push(map->walls, lst_destroy);
 	i = -1;
 	while (++i < map->size.y)
 	{
-		i2 = i * map->size.x;
+		offset = i * map->size.x;
+		prev_offset = (i - 1) * map->size.x;
+		next_offset = (i + 1) * map->size.x;
 		j = -1;
 		while (++j < map->size.x)
 		{
-			if (map->data[i2 + j] == 'P')
+			if (map->data[offset + j] == 'P')
 			{
 				if (map->player_pos.x != -1)
 					return (-1);
 				map->player_pos = (t_vec2){j, i};
 			}
-			else if (map->data[i2 + j] == 'E')
+			else if (map->data[offset + j] == 'E')
 			{
 				if (map->exit_pos.x != -1)
 					return (-1);
 				map->exit_pos = (t_vec2){j, i};
 			}
-			else if (map->data[i2 + j] == 'C')
+			else if (map->data[offset + j] == 'C')
 			{
 				vec_ptr = make_vec2(j, i);
 				if (!vec_ptr || lst_push_back(map->collect_pos, vec_ptr, free))
+					return (-1);
+			}
+			else if (map->data[offset + j] == '1')
+			{
+				wall_direction = none;
+				if (!i || map->data[prev_offset + j] == '1')
+				{
+					if (j == (map->size.x - 1) || map->data[offset + j + 1] == '1')
+					{
+						if (i == (map->size.y - 1) || map->data[next_offset + j] == '1')
+						{
+							if (!j || map->data[offset + j - 1] == '1')
+								wall_direction = all;
+							else
+								wall_direction = north_east_south;
+						}
+						else if (!j || map->data[offset + j - 1] == '1')
+							wall_direction = north_east_west;
+						else
+							wall_direction = north_east;
+					}
+					else if (i == (map->size.y - 1) || map->data[next_offset + j] == '1')
+					{
+						if (!j || map->data[offset + j - 1] == '1')
+							wall_direction = north_south_west;
+						else
+							wall_direction = north_south;
+					}
+					else if (!j || map->data[offset + j - 1] == '1')
+						wall_direction = north_west;
+					else
+						wall_direction = north;
+				}
+				else if (j == map->size.x - 1 || map->data[offset + j + 1] == '1')
+				{
+					if (i == map->size.y - 1 || map->data[next_offset + j] == '1')
+					{
+						if (!j || map->data[offset + j - 1] == '1')
+							wall_direction = east_south_west;
+						else
+							wall_direction = east_south;
+					}
+					else if (!j || map->data[offset + j - 1] == '1')
+						wall_direction = east_west;
+					else
+						wall_direction = east;
+				}
+				else if (i == map->size.y - 1 || map->data[next_offset + j] == '1')
+				{
+					if (!j || map->data[offset + j - 1] == '1')
+						wall_direction = south_west;
+					else
+						wall_direction = south;
+				}
+				else if (!j || map->data[offset + j - 1] == '1')
+					wall_direction = west;
+				wall_ptr = make_wall(j, i, wall_direction);
+				if (!wall_ptr || lst_push_back(map->walls, wall_ptr, free))
 					return (-1);
 			}
 		}

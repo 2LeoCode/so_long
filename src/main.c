@@ -6,6 +6,13 @@ void	kek(void)
 	write(1, "kek\n", 4);
 }
 
+static int	destroy_handler(void *dummy)
+{
+	(void)dummy;
+	exit_wrapper(EXIT_SUCCESS);
+	return (-1);
+}
+
 int	main(int argc, char **argv)
 {
 	t_mlx	mlx;
@@ -18,7 +25,7 @@ int	main(int argc, char **argv)
 	if (!mlx.key)
 		return (exception(bad_alloc));
 	init_wrappers(mlx.key);
-	if (get_map(&map, argv[1]))
+	if (get_map(&map, argv[1]) || load_textures(map))
 	{
 		if (errno == ENOMEM)
 			return (exception(bad_alloc));
@@ -35,6 +42,7 @@ int	main(int argc, char **argv)
 	init_renderer(mlx.main_img);
 	render_map(map);
 	mlx_key_hook(mlx.win, key_hook, (void *)map);
+	mlx_hook(mlx.win, DestroyNotify, StructureNotifyMask, destroy_handler, NULL);
 	load_main_img_to_window(mlx.key, mlx.win, mlx.main_img);
 	put_main_img_to_window();
 	mlx_loop(mlx.key);
