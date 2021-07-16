@@ -20,10 +20,8 @@ int	update_map(int keycode, t_map *map)
 	if (map->data[new_pos_index] == 'E')
 		return (2);
 	if (map->data[new_pos_index] == 'C')
-	{
 		lst_pop_if(map->collect_pos, (t_vec2 []){{new_pos_x, new_pos_y}},
 			vec2_cmp);
-	}
 	map->player_direction = bot * (keycode == _KEY_DOWN || keycode == _KEY_DOWN2)
 		+ right * (keycode == _KEY_RIGHT || keycode == _KEY_RIGHT2)
 		+ left * (keycode == _KEY_LEFT || keycode == _KEY_LEFT2);

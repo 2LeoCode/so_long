@@ -40,8 +40,6 @@ void	renderer(t_map *map, t_img *img_init)
 			while (++j < map->size.x)
 				put_tile(img, (t_vec2){j, i}, 0, map->tileset[water]);
 		}
-		i = -1;
-		printf("dir: %d\n", map->player_direction);
 		put_tile(img, map->player_pos, map->player_direction, map->tileset[character]);
 		put_tile(img, map->exit_pos, 0, map->tileset[end_level]);
 		it = map->walls->next;

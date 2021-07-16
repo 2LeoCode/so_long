@@ -17,7 +17,6 @@ int	main(int argc, char **argv)
 {
 	t_mlx	mlx;
 	t_map	*map;
-	//int		errcode;
 
 	if (argc != 2)
 		return (exception(invalid_arguments));
