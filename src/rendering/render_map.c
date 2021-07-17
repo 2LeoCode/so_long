@@ -21,10 +21,31 @@ static void	put_tile(t_img *img, t_vec2 dstpos, int src_x, t_img *texture)
 	}
 }
 
+void	put_walls(t_map *map, t_img *img)
+{
+	const t_list	*it = map->walls->next;
+
+	while (it != map->walls)
+	{
+		put_tile(img, (t_vec2){((t_wall *)it->data)->x, ((t_wall *)it->data)->y}, ((t_wall *)it->data)->orientation, map->tileset[wall]);
+		it = it->next;
+	}
+}
+
+void	put_collectibles(t_mmap *map, t_img *img)
+{
+	const t_list	*it = map->collect_pos->next;
+
+	while (it != map->collect_pos)
+	{
+		put_tile(img, *(t_vec2 *)it->data, 0, map->tileset[gem]);
+		it = it->next;
+	}
+}
+
 void	renderer(t_map *map, t_img *img_init)
 {
 	static t_img		*img = NULL;
-	t_list				*it;
 	int					i;
 	int					j;
 
@@ -42,18 +63,8 @@ void	renderer(t_map *map, t_img *img_init)
 		}
 		put_tile(img, map->player_pos, map->player_direction, map->tileset[character]);
 		put_tile(img, map->exit_pos, 0, map->tileset[end_level]);
-		it = map->walls->next;
-		while (it != map->walls)
-		{
-			put_tile(img, (t_vec2){((t_wall *)it->data)->x, ((t_wall *)it->data)->y}, ((t_wall *)it->data)->orientation, map->tileset[wall]);
-			it = it->next;
-		}
-		it = map->collect_pos->next;
-		while (it != map->collect_pos)
-		{
-			put_tile(img, *(t_vec2 *)it->data, 0, map->tileset[gem]);
-			it = it->next;
-		}
+		put_walls(map, img);
+		put_collectibles(map, img);
 	}
 }
 

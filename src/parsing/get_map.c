@@ -55,16 +55,107 @@ t_list	*get_file_content(const char *path)
 	return (lines);
 }
 
+t_walldir	process_north(t_map *map, int offset, int i, int j)
+{
+	const int	prev_offset = (i - 1) * map->size.x;
+	const int	next_offset = (i + 1) * map->size.x;
+
+	if (j == (map->size.x - 1) || map->data[offset + j + 1] == '1')
+	{
+		if (i == (map->size.y - 1) || map->data[next_offset + j] == '1')
+		{
+			if (!j || map->data[offset + j - 1] == '1')
+				return (all);
+			return (north_east_south);
+		}
+		if (!j || map->data[offset + j - 1] == '1')
+			return (north_east_west);
+		return (north_east);
+	}
+	if (i == (map->size.y - 1) || map->data[next_offset + j] == '1')
+	{
+		if (!j || map->data[offset + j - 1] == '1')
+			return (north_south_west);
+		return (north_south);
+	}
+	if (!j || map->data[offset + j - 1] == '1')
+		return (north_west)
+	return (north);
+}
+
+t_walldir	process_east(t_map *map, int offset, int i, int j)
+{
+	const int	prev_offset = (i - 1) * map->size.x;
+	const int	next_offset = (i + 1) * map->size.x;
+
+	if (i == map->size.y - 1 || map->data[next_offset + j] == '1')
+	{
+		if (!j || map->data[offset + j - 1] == '1')
+			return (east_south_west);
+		return (east_south);
+	}
+	if (!j || map->data[offset + j - 1] == '1')
+		return (east_west);
+	return (east);
+}
+
+int	get_wall_direction(t_map *map, int offset, int i, int j)
+{
+	t_walldir	wall_direction;
+	t_wall		*wall_ptr;
+
+	wall_direction = none;
+	if (!i || map->data[prev_offset + j] == '1')
+		wall_direction = process_north(map, offset, i, j);
+	else if (j == map->size.x - 1 || map->data[offset + j + 1] == '1')
+		wall_direction = process_east(map, offset, i, j);
+	else if (i == map->size.y - 1 || map->data[next_offset + j] == '1')
+	{
+		if (!j || map->data[offset + j - 1] == '1')
+			wall_direction = south_west;
+		else
+			wall_direction = south;
+	}
+	else if (!j || map->data[offset + j - 1] == '1')
+		wall_direction = west;
+	wall_ptr = make_wall(j, i, wall_direction);
+	if (!wall_ptr || lst_push_back(map->walls, wall_ptr, free))
+		return (-1);
+	return (0);
+}
+
+int	check_tile(t_map *map, int offset, int i, int j)
+{
+	t_vec2	*vec_ptr;
+
+	if (map->data[offset + j] == 'P')
+	{
+		if (map->player_pos.x != -1)
+			return (-1);
+		map->player_pos = (t_vec2){j, i};
+	}
+	else if (map->data[offset + j] == 'E')
+	{
+		if (map->exit_pos.x != -1)
+			return (-1);
+		map->exit_pos = (t_vec2){j, i};
+	}
+	else if (map->data[offset + j] == 'C')
+	{
+		vec_ptr = make_vec2(j, i);
+		if (!vec_ptr || lst_push_back(map->collect_pos, vec_ptr, free))
+			return (-1);
+	}
+	else if (map->data[offset + j] == '1' && get_wall_direction(map, offset, i, j))
+		return (-1);
+	return (0);
+}
+
 int		get_map_infos(t_map *map)
 {
 	int			i;
-	int			offset;
-	int			prev_offset;
-	int			next_offset;
 	int			j;
-	t_wall		*wall_ptr;
-	t_vec2		*vec_ptr;
-	t_walldir	wall_direction;
+	int			offset;
 
 	map->player_pos = (t_vec2){-1, -1};
 	map->player_direction = top;
@@ -80,97 +171,63 @@ int		get_map_infos(t_map *map)
 	while (++i < map->size.y)
 	{
 		offset = i * map->size.x;
-		prev_offset = (i - 1) * map->size.x;
-		next_offset = (i + 1) * map->size.x;
 		j = -1;
 		while (++j < map->size.x)
-		{
-			if (map->data[offset + j] == 'P')
-			{
-				if (map->player_pos.x != -1)
-					return (-1);
-				map->player_pos = (t_vec2){j, i};
-			}
-			else if (map->data[offset + j] == 'E')
-			{
-				if (map->exit_pos.x != -1)
-					return (-1);
-				map->exit_pos = (t_vec2){j, i};
-			}
-			else if (map->data[offset + j] == 'C')
-			{
-				vec_ptr = make_vec2(j, i);
-				if (!vec_ptr || lst_push_back(map->collect_pos, vec_ptr, free))
-					return (-1);
-			}
-			else if (map->data[offset + j] == '1')
-			{
-				wall_direction = none;
-				if (!i || map->data[prev_offset + j] == '1')
-				{
-					if (j == (map->size.x - 1) || map->data[offset + j + 1] == '1')
-					{
-						if (i == (map->size.y - 1) || map->data[next_offset + j] == '1')
-						{
-							if (!j || map->data[offset + j - 1] == '1')
-								wall_direction = all;
-							else
-								wall_direction = north_east_south;
-						}
-						else if (!j || map->data[offset + j - 1] == '1')
-							wall_direction = north_east_west;
-						else
-							wall_direction = north_east;
-					}
-					else if (i == (map->size.y - 1) || map->data[next_offset + j] == '1')
-					{
-						if (!j || map->data[offset + j - 1] == '1')
-							wall_direction = north_south_west;
-						else
-							wall_direction = north_south;
-					}
-					else if (!j || map->data[offset + j - 1] == '1')
-						wall_direction = north_west;
-					else
-						wall_direction = north;
-				}
-				else if (j == map->size.x - 1 || map->data[offset + j + 1] == '1')
-				{
-					if (i == map->size.y - 1 || map->data[next_offset + j] == '1')
-					{
-						if (!j || map->data[offset + j - 1] == '1')
-							wall_direction = east_south_west;
-						else
-							wall_direction = east_south;
-					}
-					else if (!j || map->data[offset + j - 1] == '1')
-						wall_direction = east_west;
-					else
-						wall_direction = east;
-				}
-				else if (i == map->size.y - 1 || map->data[next_offset + j] == '1')
-				{
-					if (!j || map->data[offset + j - 1] == '1')
-						wall_direction = south_west;
-					else
-						wall_direction = south;
-				}
-				else if (!j || map->data[offset + j - 1] == '1')
-					wall_direction = west;
-				wall_ptr = make_wall(j, i, wall_direction);
-				if (!wall_ptr || lst_push_back(map->walls, wall_ptr, free))
-					return (-1);
-			}
-		}
+			if (check_tile(map, offset, i, j))
+				return (-1);
 	}
+	return (0);
+}
+
+bool	check_walls(t_list *file_content, t_vec2 *map_size)
+{
+	t_list	*it;
+	size_t	line_len;
+
+	it = file_content->next;
+	while (it != file_content)
+	{
+		line_len = ft_strlen((char *)it->data);
+		if (map_size->x == -1)
+		{
+			if (!is_horizontal_wall((char *)it->data, line_len))
+				return (false);
+			map_size->x = (int)line_len;
+		}
+		else if ((int)ft_strlen((char *)it->data) != map_size->x
+			|| (it->next != file_content
+				&& !is_vertical_wall((char *)it->data, line_len))
+			|| (it->next == file_content
+				&& !is_horizontal_wall((char *)it->data, line_len)))
+			return (false);
+		map_size->y++;
+		it = it->next;
+	}
+	return (true);
+}
+
+int	setup_map(t_map *map, t_list *file_content)
+{
+	map->total_size = map_size.x * map_size.y;
+	map->size.x = map_size.x;
+	map->size.y = map_size.y;
+	it = file_content->next;
+	i = 0;
+	while (it != file_content)
+	{
+		ft_memcpy(map->data + i * map_size.x, it->data, map_size.x);
+		it = it->next;
+		i++;
+	}
+	lst_destroy(file_content);
+	if (gb_push(map, free))
+		return (-1);
 	return (0);
 }
 
 int	get_map(t_map **map_addr, const char *path)
 {
 	t_list			*file_content;
-	t_list			*it;
-	size_t			line_len;
 	t_vec2			map_size;
 	unsigned int	i;
 
@@ -181,42 +238,8 @@ int	get_map(t_map **map_addr, const char *path)
 	file_content = get_file_content(path);
 	if (!file_content)
 		return (-1);
-	it = file_content->next;
-	while (it != file_content)
-	{
-		line_len = ft_strlen((char *)it->data);
-		if (map_size.x == -1)
-		{
-			if (!is_horizontal_wall((char *)it->data, line_len))
-				return (-1);
-			map_size.x = (int)line_len;
-		}
-		else if ((int)ft_strlen((char *)it->data) != map_size.x
-			|| (it->next != file_content
-				&& !is_vertical_wall((char *)it->data, line_len))
-			|| (it->next == file_content
-				&& !is_horizontal_wall((char *)it->data, line_len)))
-			return (-1);
-		map_size.y++;
-		it = it->next;
-	}
 	*map_addr = malloc(sizeof(t_map) + sizeof(char) * (map_size.x * map_size.y));
-	if (!*map_addr)
-		return (-1);
-	(*map_addr)->total_size = map_size.x * map_size.y;
-	(*map_addr)->size.x = map_size.x;
-	(*map_addr)->size.y = map_size.y;
-	it = file_content->next;
-	i = 0;
-	while (it != file_content)
-	{
-		ft_memcpy((*map_addr)->data + i * map_size.x, it->data, map_size.x);
-		it = it->next;
-		i++;
-	}
-	gb_pop();
-	gb_push(*map_addr, free);
-	if (get_map_infos(*map_addr))
+	if (!*map_addr || setup_map(*map_addr, file_content) || get_map_infos(*map_addr))
 		return (-1);
 	return (0);
 }

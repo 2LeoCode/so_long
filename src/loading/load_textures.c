@@ -10,6 +10,7 @@ int	load_textures(t_map *map)
 		"data/wall.xpm",
 		"data/water.xpm"
 	};
+
 	i = -1;
 	while (++i < TEXTURE_CNT)
 	{
