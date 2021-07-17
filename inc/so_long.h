@@ -20,14 +20,14 @@
 # define WALL_DIR_CNT 16
 # define PLAYER_DIR_CNT 4
 
-# define _KEY_LEFT 123
-# define _KEY_RIGHT 124
-# define _KEY_DOWN 125
-# define _KEY_UP 126
-# define _KEY_LEFT2 0
-# define _KEY_RIGHT2 2
-# define _KEY_DOWN2 1
-# define _KEY_UP2 13
+# define _KEY_A 123
+# define _KEY_D 124
+# define _KEY_S 125
+# define _KEY_W 126
+# define _KEY_LEFT 0
+# define _KEY_RIGHT 2
+# define _KEY_DOWN 1
+# define _KEY_UP 13
 # define _KEY_ESC 53
 
 void	kek(void);

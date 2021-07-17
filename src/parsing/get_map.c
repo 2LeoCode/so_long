@@ -57,8 +57,7 @@ t_list	*get_file_content(const char *path)
 
 t_walldir	process_north(t_map *map, int offset, int i, int j)
 {
-	const int	prev_offset = (i - 1) * map->size.x;
-	const int	next_offset = (i + 1) * map->size.x;
+	const int	next_offset = offset + map->size.x;
 
 	if (j == (map->size.x - 1) || map->data[offset + j + 1] == '1')
 	{
@@ -79,14 +78,13 @@ t_walldir	process_north(t_map *map, int offset, int i, int j)
 		return (north_south);
 	}
 	if (!j || map->data[offset + j - 1] == '1')
-		return (north_west)
+		return (north_west);
 	return (north);
 }
 
 t_walldir	process_east(t_map *map, int offset, int i, int j)
 {
-	const int	prev_offset = (i - 1) * map->size.x;
-	const int	next_offset = (i + 1) * map->size.x;
+	const int	next_offset = offset + map->size.x;
 
 	if (i == map->size.y - 1 || map->data[next_offset + j] == '1')
 	{
@@ -103,6 +101,8 @@ int	get_wall_direction(t_map *map, int offset, int i, int j)
 {
 	t_walldir	wall_direction;
 	t_wall		*wall_ptr;
+	const int	prev_offset = offset - map->size.x;
+	const int	next_offset = offset + map->size.x;
 
 	wall_direction = none;
 	if (!i || map->data[prev_offset + j] == '1')
@@ -179,11 +179,12 @@ int		get_map_infos(t_map *map)
 	return (0);
 }
 
-bool	check_walls(t_list *file_content, t_vec2 *map_size)
+bool	check_walls_and_get_size(t_list *file_content, t_vec2 *map_size)
 {
 	t_list	*it;
 	size_t	line_len;
 
+	gb_push(file_content, lst_destroy);
 	it = file_content->next;
 	while (it != file_content)
 	{
@@ -206,12 +207,14 @@ bool	check_walls(t_list *file_content, t_vec2 *map_size)
 	return (true);
 }
 
-int	setup_map(t_map *map, t_list *file_content)
+int	setup_map(t_map *map, t_list *file_content, t_vec2 map_size)
 {
+	const t_list	*it = file_content->next;
+	unsigned int	i;
+
 	map->total_size = map_size.x * map_size.y;
 	map->size.x = map_size.x;
 	map->size.y = map_size.y;
-	it = file_content->next;
 	i = 0;
 	while (it != file_content)
 	{
@@ -219,7 +222,7 @@ int	setup_map(t_map *map, t_list *file_content)
 		it = it->next;
 		i++;
 	}
-	lst_destroy(file_content);
+	gb_pop();
 	if (gb_push(map, free))
 		return (-1);
 	return (0);
@@ -229,17 +232,16 @@ int	get_map(t_map **map_addr, const char *path)
 {
 	t_list			*file_content;
 	t_vec2			map_size;
-	unsigned int	i;
 
 	map_size.x = -1;
 	map_size.y = 0;
 	if (!check_file(path))
 		return (-1);
 	file_content = get_file_content(path);
-	if (!file_content)
+	if (!file_content || !check_walls_and_get_size(file_content, &map_size))
 		return (-1);
 	*map_addr = malloc(sizeof(t_map) + sizeof(char) * (map_size.x * map_size.y));
-	if (!*map_addr || setup_map(*map_addr, file_content) || get_map_infos(*map_addr))
+	if (!*map_addr || setup_map(*map_addr, file_content, map_size) || get_map_infos(*map_addr))
 		return (-1);
 	return (0);
 }

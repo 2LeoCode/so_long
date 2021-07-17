@@ -1,6 +1,6 @@
 #include <so_long.h>
 
-static int	process_tile(t_vec2 new_pos, int new_index, int old_index, t_map *map)
+static int	process_tile(t_vec2 new_pos, int new_index, t_map *map)
 {
 	if (new_pos.x == map->size.x || new_pos.x < 0
 	|| new_pos.y == map->size.y || new_pos.y < 0
@@ -26,7 +26,7 @@ int	update_map(int keycode, t_map *map)
 	const int	new_pos_index = new_pos_y * map->size.x + new_pos_x;
 	const int	old_pos_index = map->player_pos.y * map->size.x
 		+ map->player_pos.x;
-	const int	ret = process_tile((t_vec2){new_pos_x, new_pos_y}, new_pos_index, old_pos_index, map);
+	const int	ret = process_tile((t_vec2){new_pos_x, new_pos_y}, new_pos_index, map);
 
 	if (ret >= 0)
 		return (ret);
@@ -50,9 +50,9 @@ void	print_map(t_map *map)
 
 bool	is_valid_key(int keycode)
 {
-	return (keycode == _KEY_LEFT || keycode == _KEY_LEFT2 || keycode == _KEY_RIGHT
-		|| keycode == _KEY_RIGHT2 || keycode == _KEY_UP || keycode == _KEY_UP2
-		|| keycode == _KEY_DOWN || keycode == _KEY_DOWN2);
+	return (keycode == _KEY_LEFT || keycode == _KEY_A || keycode == _KEY_RIGHT
+		|| keycode == _KEY_D || keycode == _KEY_UP || keycode == _KEY_W
+		|| keycode == _KEY_DOWN || keycode == _KEY_S);
 }
 
 int	key_hook(int keycode, void *param)

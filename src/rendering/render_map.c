@@ -32,7 +32,7 @@ void	put_walls(t_map *map, t_img *img)
 	}
 }
 
-void	put_collectibles(t_mmap *map, t_img *img)
+void	put_collectibles(t_map *map, t_img *img)
 {
 	const t_list	*it = map->collect_pos->next;
 
