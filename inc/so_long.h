@@ -20,15 +20,27 @@
 # define WALL_DIR_CNT 16
 # define PLAYER_DIR_CNT 4
 
-# define _KEY_A 123
-# define _KEY_D 124
-# define _KEY_S 125
-# define _KEY_W 126
-# define _KEY_LEFT 0
-# define _KEY_RIGHT 2
-# define _KEY_DOWN 1
-# define _KEY_UP 13
-# define _KEY_ESC 53
+# ifdef __linux__
+#  define _KEY_A 97
+#  define _KEY_D 100
+#  define _KEY_S 115
+#  define _KEY_W 119
+#  define _KEY_LEFT 65361
+#  define _KEY_RIGHT 65363
+#  define _KEY_DOWN 65364
+#  define _KEY_UP 65362
+#  define _KEY_ESC 65307
+# else
+#  define _KEY_A 123
+#  define _KEY_D 124
+#  define _KEY_S 125
+#  define _KEY_W 126
+#  define _KEY_LEFT 0
+#  define _KEY_RIGHT 2
+#  define _KEY_DOWN 1
+#  define _KEY_UP 13
+#  define _KEY_ESC 53
+# endif
 
 void	kek(void);
 
@@ -69,6 +81,8 @@ typedef enum e_wall_direction
 	all
 }	t_walldir;
 
+typedef t_walldir	t_walld;
+
 typedef struct s_vec2
 {
 	int	x;
@@ -78,7 +92,7 @@ typedef struct s_vec2
 typedef struct s_img
 {
 	void	*img_ptr;
-	int 	*data;
+	int		*data;
 	int		bpp;
 	int		size_line;
 	int		endian;
@@ -180,5 +194,14 @@ int		vec2_cmp(const void *a, const void *b);
 t_vec2	*make_vec2(int x, int y);
 int		load_textures(t_map *map);
 t_wall	*make_wall(int x, int y, t_walldir orientation);
+void	put_tile(t_img *img, t_vec2 dstpos, int src_x, t_img *texture);
+bool	is_vertical_wall(const char *s, size_t len);
+bool	is_horizontal_wall(const char *s, size_t len);
+bool	check_file(const char *path);
+t_list	*get_file_content(const char *path);
+t_walld	process_north(t_map *map, int offset, int i, int j);
+t_walld	process_east(t_map *map, int offset, int i, int j);
+t_walld	process_east(t_map *map, int offset, int i, int j);
+int		get_wall_direction(t_map *map, int offset, int i, int j);
 
 #endif

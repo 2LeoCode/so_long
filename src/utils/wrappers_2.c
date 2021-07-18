@@ -13,9 +13,9 @@ void	*mlx_xpm_file_to_image_wrapper(void *data)
 	{
 		xpm_wrapper = (t_xpmwrap *)data;
 		img_ptr = mlx_xpm_file_to_image(key,
-									xpm_wrapper->filename,
-									xpm_wrapper->w_ptr,
-									xpm_wrapper->h_ptr);
+				xpm_wrapper->filename,
+				xpm_wrapper->w_ptr,
+				xpm_wrapper->h_ptr);
 	}
 	return (img_ptr);
 }

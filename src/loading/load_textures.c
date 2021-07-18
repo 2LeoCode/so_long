@@ -15,9 +15,9 @@ int	load_textures(t_map *map)
 	while (++i < TEXTURE_CNT)
 	{
 		if (gb_construct_and_push(&map->tileset[i],
-			init_image_from_xpm,
-			(void *)filenames[i],
-			free))
+				init_image_from_xpm,
+				(void *)filenames[i],
+				free))
 			return (-1);
 	}
 	return (0);

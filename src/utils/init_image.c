@@ -14,7 +14,7 @@ void	*init_image(void *param)
 		return (NULL);
 	}
 	new_img->data = (int *)mlx_get_data_addr(new_img->img_ptr, &new_img->bpp,
-					&new_img->size_line, &new_img->endian);
+			&new_img->size_line, &new_img->endian);
 	new_img->total_size = ((t_vec2 *)param)->x * ((t_vec2 *)param)->y;
 	new_img->size.x = ((t_vec2 *)param)->x;
 	new_img->size.y = ((t_vec2 *)param)->y;
@@ -41,7 +41,7 @@ void	*init_image_from_xpm(void *param)
 		return (NULL);
 	}
 	new_img->data = (int *)mlx_get_data_addr(new_img->img_ptr, &new_img->bpp,
-		&new_img->size_line, &new_img->endian);
+			&new_img->size_line, &new_img->endian);
 	new_img->total_size = x * y;
 	new_img->size.x = x;
 	new_img->size.y = y;

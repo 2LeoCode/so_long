@@ -29,10 +29,13 @@ SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
 				invalid_map\
 				runtime_error)\
 			$(addprefix parsing/,\
-				get_map)\
+				get_map\
+				map_utils\
+				wall_directions)\
 			$(addprefix rendering/,\
 				render_map\
-				img_loader)\
+				img_loader\
+				render_utils)\
 			$(addprefix utils/,\
 				init_image\
 				make_color\
@@ -57,7 +60,7 @@ INC =		$(addsuffix $(word 3, $(.SUFFIXES)),\
 LIB =		libft\
 			liblist\
 			libgb
-DLIB =		libmlx
+DLIB =		
 LIBNAME =	$(foreach lib, $(LIB),\
 				$(lib)$(word 4, $(.SUFFIXES)))\
 			$(foreach lib, $(DLIB),\
@@ -74,6 +77,8 @@ CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) -fsanitize=address -g3
 LCFLAGS =	-L . $(addprefix -l, $(LIB:lib%=%) $(DLIB:lib%=%))
 
 ifeq ($(OS), Darwin)
+	CONFIGFILE =	config_macos.sh
+	DLIB +=		libmlx
 	KNRM =		\x1B[0m
 	KRED =		\x1B[31m
 	KGRN =		\x1B[32m
@@ -83,7 +88,10 @@ ifeq ($(OS), Darwin)
 	KCYN =		\x1B[36m
 	KWHT =		\x1B[37m
 else
-	KNRM =		\e[39mk/
+	CONFIGFILE =	config_linux.sh
+	LIB +=		libmlx
+	LCFLAGS +=	-lXext -lX11 -lm -lz
+	KNRM =		\e[39m
 	KRED =		\e[31m
 	KGRN =		\e[32m
 	KYEL =		\e[33m
@@ -93,8 +101,11 @@ else
 	KWHT =		\e[37m
 endif
 
-all: $(OBJFOLD) $(LIBNAME) $(NAME)
+all: config $(OBJFOLD) $(LIBNAME) $(NAME)
 	@printf "$(KGRN)\`$(NAME)\` is up to date.\n$(KNRM)"
+
+config:
+	@./$(CONFIGFILE)
 
 $(OBJFOLD):
 	@printf "$(KYEL)➤ "
@@ -132,6 +143,7 @@ clean:
 	$(foreach lib, $(LIBMAKE) $(DLIBMAKE),\
 		$(MAKE) fclean -C $(lib);)
 	@printf "$(KNRM)"
+	@./config_reset.sh
 
 fclean: clean
 	@printf "$(KRED)➤ "

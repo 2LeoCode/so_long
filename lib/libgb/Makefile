@@ -62,7 +62,7 @@ ifeq ($(OS), Darwin)
 	KCYN =		\x1B[36m
 	KWHT =		\x1B[37m
 else
-	KNRM =		\e[39mk/
+	KNRM =		\e[39m
 	KRED =		\e[31m
 	KGRN =		\e[32m
 	KYEL =		\e[33m

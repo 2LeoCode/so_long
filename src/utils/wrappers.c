@@ -13,9 +13,9 @@ void	*mlx_new_window_wrapper(void *data)
 	{
 		window_wrapper = (t_winwrap *)data;
 		win_ptr = mlx_new_window(key,
-								window_wrapper->size.x,
-								window_wrapper->size.y,
-								window_wrapper->title);
+				window_wrapper->size.x,
+				window_wrapper->size.y,
+				window_wrapper->title);
 	}
 	return (win_ptr);
 }
@@ -30,7 +30,8 @@ void	mlx_destroy_window_wrapper(void *data)
 		mlx_destroy_window(key, data);
 }
 
-void	*mlx_new_image_wrapper(void *data) {
+void	*mlx_new_image_wrapper(void *data)
+{
 	static void	*key;
 	t_vec2		*image_size;
 	void		*img_ptr;
@@ -42,8 +43,8 @@ void	*mlx_new_image_wrapper(void *data) {
 	{
 		image_size = (t_vec2 *)data;
 		img_ptr = mlx_new_image(key,
-								image_size->x,
-								image_size->y);
+				image_size->x,
+				image_size->y);
 	}
 	return (img_ptr);
 }

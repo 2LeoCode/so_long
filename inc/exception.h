@@ -10,6 +10,6 @@ void	runtime_error(void);
 void	invalid_arguments(void);
 void	invalid_map(void);
 
-int	exception(t_exception except);
+int		exception(t_exception except);
 
 #endif
