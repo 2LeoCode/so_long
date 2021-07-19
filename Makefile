@@ -73,7 +73,7 @@ OBJ =		$(addprefix $(OBJDIR)/,\
 				$(SRC:$(word 1, $(.SUFFIXES))=$(word 2, $(.SUFFIXES))))
 
 CC =		gcc
-CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) -fsanitize=address -g3
+CFLAGS =	-Wall -Wextra -Werror -I $(INCDIR) #-fsanitize=address -g3
 LCFLAGS =	-L . $(addprefix -l, $(LIB:lib%=%) $(DLIB:lib%=%))
 
 ifeq ($(OS), Darwin)

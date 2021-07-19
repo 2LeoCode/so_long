@@ -1,5 +1,15 @@
 #include <so_long.h>
 
+int		push_vec2(t_list *lst, int x, int y)
+{
+	t_vec2	*vec_ptr;
+
+	vec_ptr = make_vec2(x, y);
+	if (!vec_ptr || lst_push_back(lst, vec_ptr, free))
+		return (-1);
+	return (0);
+}
+
 bool	is_vertical_wall(const char *s, size_t len)
 {
 	return (*s == '1' && s[len - 1] == '1');

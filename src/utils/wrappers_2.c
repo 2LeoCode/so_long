@@ -19,3 +19,9 @@ void	*mlx_xpm_file_to_image_wrapper(void *data)
 	}
 	return (img_ptr);
 }
+
+void	*lst_new_wrapper(void *dummy)
+{
+	(void)dummy;
+	return (lst_new());
+}

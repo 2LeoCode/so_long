@@ -29,11 +29,11 @@ int	update_map(int keycode, t_map *map)
 	const int	ret = process_tile((t_vec2){new_pos_x, new_pos_y},
 		new_pos_index, map);
 
-	if (ret >= 0)
-		return (ret);
 	map->player_direction = bot * (keycode == _KEY_DOWN || keycode == _KEY_S)
 		+ right * (keycode == _KEY_RIGHT || keycode == _KEY_D)
 		+ left * (keycode == _KEY_LEFT || keycode == _KEY_A);
+	if (ret >= 0)
+		return (ret);
 	map->data[new_pos_index] = 'P';
 	map->data[old_pos_index] = '0';
 	map->player_pos.x = new_pos_x;
@@ -50,17 +50,17 @@ bool	is_valid_key(int keycode)
 
 int	key_hook(int keycode, void *param)
 {
-	static int	mv_cnt = 0;
-	int			status;
+	static int		mv_cnt = 0;
+	int				status;
+	const t_vec2	prev_pos = {((t_map *)param)->player_pos.x,
+		((t_map *)param)->player_pos.y};
 
 	if (keycode == _KEY_ESC)
 		exit_wrapper(EXIT_SUCCESS);
 	status = 0;
 	if (is_valid_key(keycode))
 		status = update_map(keycode, (t_map *)param);
-	if (!status)
-		return (1);
-	mv_cnt++;
+	mv_cnt += !!vec2_cmp(&prev_pos, &((t_map *)param)->player_pos);
 	ft_putchar('\r');
 	ft_putnbr(mv_cnt);
 	if (status == 2)

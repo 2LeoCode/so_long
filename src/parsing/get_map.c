@@ -1,9 +1,8 @@
 #include <so_long.h>
+#include <stdio.h>
 
 static int	check_tile(t_map *map, int offset, int i, int j)
 {
-	t_vec2	*vec_ptr;
-
 	if (map->data[offset + j] == 'P')
 	{
 		if (map->player_pos.x != -1)
@@ -12,18 +11,20 @@ static int	check_tile(t_map *map, int offset, int i, int j)
 	}
 	else if (map->data[offset + j] == 'E')
 	{
-		if (map->exit_pos.x != -1)
+		if (push_vec2(map->exit_pos, j, i))
 			return (-1);
-		map->exit_pos = (t_vec2){j, i};
 	}
 	else if (map->data[offset + j] == 'C')
 	{
-		vec_ptr = make_vec2(j, i);
-		if (!vec_ptr || lst_push_back(map->collect_pos, vec_ptr, free))
+		if (push_vec2(map->collect_pos, j, i))
 			return (-1);
 	}
-	else if (map->data[offset + j] == '1'
-		&& get_wall_direction(map, offset, i, j))
+	else if (map->data[offset + j] == '1')
+	{
+		if (get_wall_direction(map, offset, i, j))
+			return (-1);
+	}
+	else if (map->data[offset + j] != '0')
 		return (-1);
 	return (0);
 }
@@ -36,14 +37,10 @@ static int	get_map_infos(t_map *map)
 
 	map->player_pos = (t_vec2){-1, -1};
 	map->player_direction = top;
-	map->exit_pos = (t_vec2){-1, -1};
-	if (lst_init(&map->collect_pos) || lst_init(&map->walls))
-	{
-		lst_destroy(map->collect_pos);
+	if (gb_construct_and_push(&map->collect_pos, lst_new_wrapper, NULL, lst_destroy)
+	|| gb_construct_and_push(&map->exit_pos, lst_new_wrapper, NULL, lst_destroy)
+	|| gb_construct_and_push(&map->walls, lst_new_wrapper, NULL, lst_destroy))
 		return (-1);
-	}
-	gb_push(map->collect_pos, lst_destroy);
-	gb_push(map->walls, lst_destroy);
 	i = -1;
 	while (++i < map->size.y)
 	{

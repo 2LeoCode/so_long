@@ -118,7 +118,7 @@ typedef struct s_map
 {
 	t_vec2		size;
 	t_vec2		player_pos;
-	t_vec2		exit_pos;
+	t_list		*exit_pos;
 	t_list		*collect_pos;
 	t_list		*walls;
 	t_direction	player_direction;
@@ -187,11 +187,13 @@ void	*mlx_new_image_wrapper(void *data);
 void	*mlx_xpm_file_to_image_wrapper(void *data);
 void	mlx_destroy_window_wrapper(void *data);
 void	mlx_destroy_image_wrapper(void *data);
+void	*lst_new_wrapper(void *dummy);
 void	exit_wrapper(int ret);
 
 void	init_wrappers(void *key);
 int		vec2_cmp(const void *a, const void *b);
 t_vec2	*make_vec2(int x, int y);
+int		push_vec2(t_list *lst, int x, int y);
 int		load_textures(t_map *map);
 t_wall	*make_wall(int x, int y, t_walldir orientation);
 void	put_tile(t_img *img, t_vec2 dstpos, int src_x, t_img *texture);
