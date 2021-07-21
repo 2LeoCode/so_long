@@ -42,8 +42,6 @@
 #  define _KEY_ESC 53
 # endif
 
-void	kek(void);
-
 enum e_texture
 {
 	character,
@@ -189,6 +187,7 @@ void	mlx_destroy_window_wrapper(void *data);
 void	mlx_destroy_image_wrapper(void *data);
 void	*lst_new_wrapper(void *dummy);
 void	exit_wrapper(int ret);
+int		render_map_wrapper(void *map);
 
 void	init_wrappers(void *key);
 int		vec2_cmp(const void *a, const void *b);

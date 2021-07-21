@@ -1,5 +1,4 @@
 #include <so_long.h>
-#include <stdio.h>
 
 static int	check_tile(t_map *map, int offset, int i, int j)
 {

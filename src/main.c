@@ -1,11 +1,6 @@
 #include <exception.h>
 #include <so_long.h>
 
-void	kek(void)
-{
-	write(1, "kek\n", 4);
-}
-
 static int	destroy_handler(void *dummy)
 {
 	(void)dummy;
@@ -47,12 +42,12 @@ int	main(int argc, char **argv)
 	if (init_map_and_mlx(&mlx, &map, argv[1]))
 		return (-1);
 	init_renderer(mlx.main_img);
-	render_map(map);
-	mlx_key_hook(mlx.win, key_hook, (void *)map);
+	load_main_img_to_window(mlx.key, mlx.win, mlx.main_img);
+	mlx_key_hook(mlx.win, key_hook, map);
+	mlx_hook(mlx.win, VisibilityNotify, VisibilityChangeMask,
+		render_map_wrapper, map);
 	mlx_hook(mlx.win, DestroyNotify, StructureNotifyMask,
 		destroy_handler, NULL);
-	load_main_img_to_window(mlx.key, mlx.win, mlx.main_img);
-	put_main_img_to_window();
 	mlx_loop(mlx.key);
 	return (0);
 }

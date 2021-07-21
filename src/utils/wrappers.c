@@ -62,5 +62,6 @@ void	mlx_destroy_image_wrapper(void *data)
 void	exit_wrapper(int ret)
 {
 	gb_clear();
+	ft_putchar('\n');
 	exit(ret);
 }

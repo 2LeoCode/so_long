@@ -25,3 +25,10 @@ void	*lst_new_wrapper(void *dummy)
 	(void)dummy;
 	return (lst_new());
 }
+
+int	render_map_wrapper(void *map)
+{
+	render_map(map);
+	put_main_img_to_window();
+	return (0);
+}

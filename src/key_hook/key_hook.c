@@ -60,6 +60,8 @@ int	key_hook(int keycode, void *param)
 	status = 0;
 	if (is_valid_key(keycode))
 		status = update_map(keycode, (t_map *)param);
+	else
+		return (0);
 	mv_cnt += !!vec2_cmp(&prev_pos, &((t_map *)param)->player_pos);
 	ft_putchar('\r');
 	ft_putnbr(mv_cnt);
