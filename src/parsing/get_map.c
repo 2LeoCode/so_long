@@ -36,9 +36,12 @@ static int	get_map_infos(t_map *map)
 
 	map->player_pos = (t_vec2){-1, -1};
 	map->player_direction = top;
-	if (gb_construct_and_push(&map->collect_pos, lst_new_wrapper, NULL, lst_destroy)
-	|| gb_construct_and_push(&map->exit_pos, lst_new_wrapper, NULL, lst_destroy)
-	|| gb_construct_and_push(&map->walls, lst_new_wrapper, NULL, lst_destroy))
+	if (gb_construct_and_push(&map->collect_pos, lst_new_wrapper, NULL,
+			lst_destroy)
+		|| gb_construct_and_push(&map->exit_pos, lst_new_wrapper, NULL,
+			lst_destroy)
+		|| gb_construct_and_push(&map->walls, lst_new_wrapper, NULL,
+			lst_destroy))
 		return (-1);
 	i = -1;
 	while (++i < map->size.y)

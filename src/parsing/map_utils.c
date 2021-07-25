@@ -1,6 +1,6 @@
 #include <so_long.h>
 
-int		push_vec2(t_list *lst, int x, int y)
+int	push_vec2(t_list *lst, int x, int y)
 {
 	t_vec2	*vec_ptr;
 
