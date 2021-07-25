@@ -52,7 +52,8 @@ static int	get_map_infos(t_map *map)
 			if (check_tile(map, offset, i, j))
 				return (-1);
 	}
-	return (0);
+	return (!*map->collect_pos->size || !*map->exit_pos->size
+		|| map->player_pos.x == -1);
 }
 
 static bool	check_walls_and_get_size(t_list *file_content, t_vec2 *map_size)
