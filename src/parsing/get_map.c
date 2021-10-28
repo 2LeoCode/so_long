@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_map.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Leo Suardi <lsuardi@student.42.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/18 16:59:17 by Leo Suardi        #+#    #+#             */
+/*   Updated: 2021/10/18 16:59:18 by Leo Suardi       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <so_long.h>
 
 static int	check_tile(t_map *map, int offset, int i, int j)
@@ -36,11 +48,11 @@ static int	get_map_infos(t_map *map)
 
 	map->player_pos = (t_vec2){-1, -1};
 	map->player_direction = top;
-	if (gb_construct_and_push(&map->collect_pos, lst_new_wrapper, NULL,
+	if (gb_construct_and_push(&map->collect_pos, (t_constructor)lst_new, NULL,
 			lst_destroy)
-		|| gb_construct_and_push(&map->exit_pos, lst_new_wrapper, NULL,
+		|| gb_construct_and_push(&map->exit_pos, (t_constructor)lst_new, NULL,
 			lst_destroy)
-		|| gb_construct_and_push(&map->walls, lst_new_wrapper, NULL,
+		|| gb_construct_and_push(&map->walls, (t_constructor)lst_new, NULL,
 			lst_destroy))
 		return (-1);
 	i = -1;

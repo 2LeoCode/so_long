@@ -1,5 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Leo Suardi <lsuardi@student.42.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/18 16:42:19 by Leo Suardi        #+#    #+#             */
+/*   Updated: 2021/10/18 16:55:58 by Leo Suardi       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <exception.h>
 #include <so_long.h>
+#include <mlx.h>
 
 static int	destroy_handler(void *dummy)
 {
@@ -10,8 +23,8 @@ static int	destroy_handler(void *dummy)
 
 int	init_map_and_mlx(t_mlx *mlx, t_map **map, char *map_path)
 {
-	mlx->key = mlx_init();
-	if (!mlx->key)
+	if (gb_construct_and_push(&mlx->key, mlx_init, NULL,
+		mlx_destroy_display_wrapper))
 		return (exception(bad_alloc));
 	init_wrappers(mlx->key);
 	if (get_map(map, map_path) || load_textures(*map))

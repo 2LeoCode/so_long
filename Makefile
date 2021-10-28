@@ -37,6 +37,7 @@ SRC =		$(addsuffix $(word 1, $(.SUFFIXES)),\
 				img_loader\
 				render_utils)\
 			$(addprefix utils/,\
+				open_file\
 				init_image\
 				make_color\
 				wrapper_init\

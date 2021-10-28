@@ -1,20 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memsub.c                                           :+:      :+:    :+:   */
+/*   open_file.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: Leo Suardi <lsuardi@student.42.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/22 12:33:08 by Leo Suardi        #+#    #+#             */
-/*   Updated: 2021/10/22 12:33:08 by Leo Suardi       ###   ########.fr       */
+/*   Created: 2021/10/22 12:23:03 by Leo Suardi        #+#    #+#             */
+/*   Updated: 2021/10/22 12:27:46 by Leo Suardi       ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <libft.h>
+#include <fcntl.h>
+#include <unistd.h>
 
-void	*ft_memsub(const void *s, size_t len, unsigned start, size_t n)
+int	open_file(const char *filename)
 {
-	if (len < start)
-		return (ft_memdup("", 0));
-	return (ft_memndup(s + start, len - start, n));
+	int	fd;
+
+	fd = open(filename, __O_DIRECTORY);
+	close(fd);
+	if (fd != -1)
+		return (-1);
+	return (open(filename, O_RDONLY));
 }

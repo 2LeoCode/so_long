@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   garbage.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Leo Suardi <lsuardi@student.42.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/22 12:30:25 by Leo Suardi        #+#    #+#             */
+/*   Updated: 2021/10/22 12:30:30 by Leo Suardi       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef GARBAGE_H
 # define GARBAGE_H
 
@@ -5,7 +17,7 @@
 # include <stdbool.h>
 # include <stdint.h>
 
-typedef void *	(*t_constructor)(void *);
+typedef void *	(*t_constructor)();
 typedef void	(*t_destructor)(void *);
 
 typedef struct s_garbage_list

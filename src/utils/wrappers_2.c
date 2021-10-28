@@ -1,5 +1,11 @@
 #include <so_long.h>
 
+void	mlx_destroy_display_wrapper(void *ptr)
+{
+	mlx_destroy_display(ptr);
+	free(ptr);
+}
+
 void	*mlx_xpm_file_to_image_wrapper(void *data)
 {
 	static void	*key;
@@ -18,12 +24,6 @@ void	*mlx_xpm_file_to_image_wrapper(void *data)
 				xpm_wrapper->h_ptr);
 	}
 	return (img_ptr);
-}
-
-void	*lst_new_wrapper(void *dummy)
-{
-	(void)dummy;
-	return (lst_new());
 }
 
 int	render_map_wrapper(void *map)

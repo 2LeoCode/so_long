@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   map_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Leo Suardi <lsuardi@student.42.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/18 16:59:25 by Leo Suardi        #+#    #+#             */
+/*   Updated: 2021/10/22 12:22:51 by Leo Suardi       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <so_long.h>
 
 int	push_vec2(t_list *lst, int x, int y)
@@ -39,7 +51,7 @@ bool	check_file(const char *path)
 
 t_list	*get_file_content(const char *path)
 {
-	const int	fd = open(path, O_RDONLY);
+	const int	fd = open_file(path);
 	t_list		*lines;
 	char		*cur_line;
 	int			i;

@@ -39,7 +39,10 @@ int	gb_construct_and_push(void *data_addr, t_constructor constructor,
 	void	**ptr;
 
 	ptr = (void **)data_addr;
-	*ptr = constructor(constr_param);
+	if (constr_param)
+		*ptr = constructor(constr_param);
+	else
+		*ptr = constructor();
 	if (!*ptr)
 		return (gb_error());
 	return (garbage(*ptr, destructor, push));

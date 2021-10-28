@@ -1,5 +1,11 @@
 #include <so_long.h>
 
+void	mlx_destroy_display_handler(void *ptr)
+{
+	mlx_destroy_display(ptr);
+	free(ptr);
+}
+
 void	*mlx_new_window_wrapper(void *data)
 {
 	static void	*key;

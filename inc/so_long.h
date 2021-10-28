@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   so_long.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: Leo Suardi <lsuardi@student.42.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/10/22 12:30:47 by Leo Suardi        #+#    #+#             */
+/*   Updated: 2021/10/22 12:30:52 by Leo Suardi       ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
@@ -15,7 +27,8 @@
 
 # define ENDIAN_LITTLE 0
 # define ENDIAN_BIG 1
-# define TILE_SIZE 32
+# define TILE_SIZE 64
+# define TEXT_TILE_SIZE 32
 # define TEXTURE_CNT 5
 # define WALL_DIR_CNT 16
 # define PLAYER_DIR_CNT 4
@@ -179,16 +192,16 @@ void	put_main_img_to_window(void);
 /*
 **	wrappers
 */
-
+void	mlx_destroy_display_wrapper(void *ptr);
 void	*mlx_new_window_wrapper(void *data);
 void	*mlx_new_image_wrapper(void *data);
 void	*mlx_xpm_file_to_image_wrapper(void *data);
 void	mlx_destroy_window_wrapper(void *data);
 void	mlx_destroy_image_wrapper(void *data);
-void	*lst_new_wrapper(void *dummy);
 void	exit_wrapper(int ret);
 int		render_map_wrapper(void *map);
 
+int		open_file(const char *filename);
 void	init_wrappers(void *key);
 int		vec2_cmp(const void *a, const void *b);
 t_vec2	*make_vec2(int x, int y);
